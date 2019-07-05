@@ -1,0 +1,2 @@
+model_checkpoint_path: "Match_Pyramid.ckpt"
+all_model_checkpoint_paths: "Match_Pyramid.ckpt"
