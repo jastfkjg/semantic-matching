@@ -18,7 +18,7 @@ params = {
         "seq_len": 32,
         "n_class": 2,
 
-        "data_path": "/home/zhouzilong/deep_weapon/data/",
+        "data_path": "/path/to/data/",
         "vocab_file": None,
         "model_path": "./checkpoints/",
         "model_name": "MVLSTM",
