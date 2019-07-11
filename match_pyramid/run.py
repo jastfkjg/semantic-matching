@@ -9,12 +9,12 @@ from utils import load_vocab_file, init_embedding, load_pad_data, init_embedding
 from utils import get_vocab_dict, shuffle_data
 from matchpyramid import MatchPyramid
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4, 5"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "4, 5"
 
 params = {
-        "data_path": "../data/",
+        "data_path": "path/to/data/",
         "output_path": "./checkpoint/",
-        "vocab_path": "/home/zhouzilong/deep_weapon/char.vocab.txt",
+        "vocab_path": "path/to/vocab/",
         "num_class": 2,
         "batch_size": 256,
         "embed_size": 64,

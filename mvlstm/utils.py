@@ -47,6 +47,33 @@ def load_pad_data(path, vocab, seq_len):
 
     return data
 
+def load_pad_data_with_seg(fname, vocab, seq_len):
+    """load tab data with segmentation and padding"""
+    import jieba
+    sent_0, sent_1 = [], []
+    vec_0, vec_1, label = [], [], []
+    len_0, len_1 = [], []
+    with open(fname) as f:
+        for line in f:
+            items = line.strip().split('\t')
+            sent_0.append(items[0])
+            sent_1.append(items[1])
+            word_list_0 = list(jieba.cut(items[0], cut_all=False))
+            word_list_1 = list(jieba.cut(items[1], cut_all=False))
+            v_0 = trans_sent_to_vec(word_list_0, vocab)
+            v_1 = trans_sent_to_vec(word_list_1, vocab)
+            len_0.append(len(v_0))
+            len_1.append(len(v_1))
+            v_0 = pad_seq(v_0, seq_len)
+            v_1 = pad_seq(v_1, seq_len)
+            vec_0.append(v_0)
+            vec_1.append(v_1)
+            label.append(int(items[2]))
+
+    data = {"vec_0": vec_0, "vec_1": vec_1, "label": label, \
+            "sent_0": sent_0, "sent_1": sent_1, "len_0": len_0, "len_1": len_1,}
+    return data
+
 def load_data(path, vocab):
     """
     load tab data
@@ -73,8 +100,10 @@ def load_data(path, vocab):
     return data
 
 def shuffle_data(data):
-    total = list(zip(data["vec_0"], data["vec_1"], data["label"], data["sent_0"], data["sent_1"],
-        data["len_0"], data["len_1"]))
+    for key in data:
+        print(key, len(data[key]))
+    total = list(zip(data["vec_0"], data["vec_1"], data["label"], data["sent_0"], data["sent_1"], \
+            data["len_0"], data["len_1"]))
     random.shuffle(total)
     data["vec_0"], data["vec_1"], data["label"], data["sent_0"], data["sent_1"], \
             data["len_0"], data["len_1"] = zip(*total)
@@ -83,13 +112,13 @@ def shuffle_data(data):
 
 def load_vocab_file(path):
     vocab = {}
+    vocab[UNKNOWN] = 0
     with open(path) as f:
         for line in f:
             line = line.strip().split('\t')
             num = len(vocab)
             vocab[line[0]] = num
-    num = len(vocab)
-    vocab[UNKNOWN] = num
+
     return vocab
 
 
@@ -121,7 +150,7 @@ def build_vocab_with_seg(fnames):
                     continue
                 for i in range(2):
                     seg_list = jieba.cut(items[i], cut_all=False)
-                    word_list = list(seq_list)
+                    word_list = list(seg_list)
                     for word in word_list:
                         if word not in vocab:
                             vocab[word] = len(vocab)
